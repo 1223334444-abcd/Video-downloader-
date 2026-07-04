@@ -1,16 +1,19 @@
-const CACHE_NAME = 'video-dl-v1';
-const urlsToCache = ['/'];
+<script>
+    const BACKEND_URL = 'https://video-dl-backend.onrender.com';
+    
+    let currentVideoUrl = '';
+    let currentFilename = '';
 
-self.addEventListener('install', e => {
-    e.waitUntil(
-        caches.open(CACHE_NAME)
-            .then(cache => cache.addAll(urlsToCache))
-    );
-});
+    // Register Service Worker for PWA
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js').catch(() => {});
+        });
+    }
 
-self.addEventListener('fetch', e => {
-    e.respondWith(
-        caches.match(e.request)
-            .then(res => res || fetch(e.request))
-    );
-});
+    async function fetchVideo() {
+        // ... your fetchVideo function
+    }
+
+    // ... rest of your functions (download, copyLink, etc.)
+</script>
