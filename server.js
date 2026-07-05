@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
 const url = require('url');
+const compression = require('compression');
+const morgan = require('morgan');
 require('dotenv').config();
 
 const app = express();
@@ -9,6 +11,8 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors());
+app.use(compression());
+app.use(morgan('dev'));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
@@ -44,22 +48,7 @@ app.post('/api/info', async (req, res) => {
     
     res.json(videoInfo);
   } catch (error) {
-    console.error('Error processing request:', error.message);
-    
-    // Handle specific error types
-    if (error.message.includes('ENOTFOUND') || error.message.includes('ECONNREFUSED')) {
-      return res.status(400).json({ error: 'URL not reachable. Please check the URL.' });
-    }
-    
-    if (error.message.includes('timeout')) {
-      return res.status(408).json({ error: 'Request timeout. The URL took too long to respond.' });
-    }
-    
-    if (error.message.includes('403') || error.message.includes('401')) {
-      return res.status(403).json({ error: 'Access denied. The server blocked this request.' });
-    }
-
-    res.status(500).json({ error: error.message || 'Failed to fetch video information' });
+    handleError(error, res);
   }
 });
 
@@ -81,7 +70,7 @@ async function getVideoInfo(videoUrl) {
       maxRedirects: 5,
       validateStatus: (status) => status >= 200 && status < 300,
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
       }
     });
 
@@ -106,7 +95,7 @@ async function getVideoInfo(videoUrl) {
       url: videoUrl
     };
   } catch (error) {
-    throw new Error(`Failed to fetch video: ${error.message}`);
+    throw error;
   }
 }
 
@@ -140,6 +129,47 @@ function formatFileSize(bytes) {
   return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
 }
 
+// Helper: Handle errors with proper error codes
+function handleError(error, res) {
+  console.error('Error:', error.message);
+  
+  // Network errors
+  if (error.code === 'ENOTFOUND') {
+    return res.status(400).json({ error: 'URL not reachable. Please check the domain name.' });
+  }
+  
+  if (error.code === 'ECONNREFUSED') {
+    return res.status(400).json({ error: 'Connection refused. The server rejected the connection.' });
+  }
+  
+  if (error.code === 'ETIMEDOUT' || error.message.includes('timeout')) {
+    return res.status(408).json({ error: 'Request timeout. The URL took too long to respond.' });
+  }
+  
+  if (error.code === 'ECONNRESET') {
+    return res.status(400).json({ error: 'Connection reset by server.' });
+  }
+  
+  // HTTP errors
+  if (error.response?.status === 403) {
+    return res.status(403).json({ error: 'Access denied. The server blocked this request.' });
+  }
+  
+  if (error.response?.status === 401) {
+    return res.status(401).json({ error: 'Unauthorized. Authentication required.' });
+  }
+  
+  if (error.response?.status === 404) {
+    return res.status(404).json({ error: 'Video not found. Please check the URL.' });
+  }
+  
+  if (error.response?.status >= 500) {
+    return res.status(502).json({ error: 'Server error. The video server is experiencing issues.' });
+  }
+
+  res.status(500).json({ error: error.message || 'Failed to fetch video information' });
+}
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error('Unhandled error:', err);
@@ -155,14 +185,29 @@ app.use((req, res) => {
 });
 
 // Start server
-app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
-  console.log(`📍 Health check: http://localhost:${PORT}/health`);
-  console.log(`📍 API endpoint: http://localhost:${PORT}/api/info`);
+const server = app.listen(PORT, () => {
+  console.log(`\n✅ Server running on port ${PORT}`);
+  console.log(`📋 Health check: http://localhost:${PORT}/health`);
+  console.log(`📋 API endpoint: http://localhost:${PORT}/api/info`);
+  console.log(`🔧 Environment: ${process.env.NODE_ENV || 'development'}\n`);
 });
 
 // Graceful shutdown
 process.on('SIGTERM', () => {
-  console.log('SIGTERM received, shutting down gracefully');
-  process.exit(0);
+  console.log('\n⚠️  SIGTERM received, shutting down gracefully...');
+  server.close(() => {
+    console.log('✅ Server closed');
+    process.exit(0);
+  });
 });
+
+process.on('SIGINT', () => {
+  console.log('\n⚠️  SIGINT received, shutting down gracefully...');
+  server.close(() => {
+    console.log('✅ Server closed');
+    process.exit(0);
+  });
+});
+
+// Export for testing
+module.exports = app;
