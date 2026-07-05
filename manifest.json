@@ -1,77 +1,38 @@
 {
-  "name": "GitHub",
-  "short_name": "GitHub",
+  "name": "Video Downloader",
+  "short_name": "VidDL",
   "start_url": "/",
   "display": "standalone",
+  "scope": "/",
   "icons": [
     {
-      "sizes": "114x114",
-      "src": "https://github.githubassets.com/assets/apple-touch-icon-114x114-09ce42d3ca4b.png"
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%23667eea' width='192' height='192'/><text x='50%' y='50%' font-size='100' fill='white' text-anchor='middle' dy='.3em' font-weight='bold'>📥</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
     },
     {
-      "sizes": "120x120",
-      "src": "https://github.githubassets.com/assets/apple-touch-icon-120x120-92bd46d04241.png"
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect fill='%23667eea' width='512' height='512'/><text x='50%' y='50%' font-size='280' fill='white' text-anchor='middle' dy='.3em' font-weight='bold'>📥</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
     },
     {
-      "sizes": "144x144",
-      "src": "https://github.githubassets.com/assets/apple-touch-icon-144x144-b882e354c005.png"
-    },
-    {
-      "sizes": "152x152",
-      "src": "https://github.githubassets.com/assets/apple-touch-icon-152x152-5f777cdc30ae.png"
-    },
-    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%23667eea' width='180' height='180'/><text x='50%' y='50%' font-size='90' fill='white' text-anchor='middle' dy='.3em' font-weight='bold'>📥</text></svg>",
       "sizes": "180x180",
-      "src": "https://github.githubassets.com/assets/apple-touch-icon-180x180-a80b8e11abe2.png"
-    },
-    {
-      "sizes": "57x57",
-      "src": "https://github.githubassets.com/assets/apple-touch-icon-57x57-22f09f5b3a64.png"
-    },
-    {
-      "sizes": "60x60",
-      "src": "https://github.githubassets.com/assets/apple-touch-icon-60x60-19037ac897bf.png"
-    },
-    {
-      "sizes": "72x72",
-      "src": "https://github.githubassets.com/assets/apple-touch-icon-72x72-e090c8a282d0.png"
-    },
-    {
-      "sizes": "76x76",
-      "src": "https://github.githubassets.com/assets/apple-touch-icon-76x76-a4523d80afb4.png"
-    },
-    {
-      "src": "https://github.githubassets.com/assets/app-icon-192-bcc967ab9829.png",
-      "type": "image/png",
-      "sizes": "192x192"
-    },
-    {
-      "src": "https://github.githubassets.com/assets/app-icon-512-7f9c4ff2e960.png",
-      "type": "image/png",
-      "sizes": "512x512"
+      "type": "image/svg+xml",
+      "purpose": "maskable"
     }
   ],
-  "prefer_related_applications": true,
-  "related_applications": [
+  "theme_color": "#667eea",
+  "background_color": "#ffffff",
+  "categories": ["productivity", "utilities"],
+  "screenshots": [
     {
-      "platform": "play",
-      "url": "https://play.google.com/store/apps/details?id=com.github.android",
-      "id": "com.github.android"
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 540 720'><rect fill='%23667eea' width='540' height='720'/></svg>",
+      "sizes": "540x720",
+      "type": "image/svg+xml",
+      "form_factor": "narrow"
     }
-  ],
-  "theme_color": "#000000",
-  "background_color": "#000000",
-  "categories": [
-    "education",
-    "entertainment",
-    "events",
-    "multimedia",
-    "multimedia design",
-    "music",
-    "photo &amp; video",
-    "social",
-    "social networking",
-    "sports",
-    "video"
   ]
 }
